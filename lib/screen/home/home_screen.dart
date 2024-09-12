@@ -3,6 +3,7 @@ import 'package:storyflutter/core.dart';
 import 'package:storyflutter/provider/all_stories_provider.dart';
 import 'package:storyflutter/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:storyflutter/screen/story/post_story.dart';
 
 class HomeScreenPage extends StatefulWidget {
   final Function() onLogout;
@@ -21,10 +22,15 @@ class HomeScreenPage extends StatefulWidget {
 class _HomeScreenPageState extends State<HomeScreenPage> {
   @override
   void initState() {
-    AuthProvider authProvider =
-        Provider.of<AuthProvider>(context, listen: false);
-    authProvider.getAllStories(context.read<AllStoriesProvider>());
+    // AuthProvider authProvider =
+    //     Provider.of<AuthProvider>(context, listen: false);
+    // authProvider.gettingToken();
+    // authProvider.getAllStories(context.read<AllStoriesProvider>());
     super.initState();
+    final authProvider = context.read<AuthProvider>();
+    final allProvider = context.read<AllStoriesProvider>();
+    Future.microtask(() => authProvider.getAllStories(allProvider));
+
   }
 
   @override
@@ -38,6 +44,17 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
           height: 50,
         ),
         actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const PostStoryScreen(),
+              ));
+            },
+            icon: const Icon(
+              Icons.add,
+              size: 24.0,
+            ),
+          ),
           IconButton(
             onPressed: () async {
               final authRead = context.read<AuthProvider>();
@@ -95,7 +112,8 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [

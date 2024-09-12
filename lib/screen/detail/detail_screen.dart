@@ -20,15 +20,10 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen> {
   @override
   void initState() {
-    AuthProvider authProvider =
-        Provider.of<AuthProvider>(context, listen: false);
-    if (authProvider.token!.isNotEmpty) {
-      Future.microtask(() => context
-          .read<DetailStoryProvider>()
-          .fetchDetail(authProvider.token!, widget.userId));
-    }
-
     super.initState();
+    final authProvider = context.read<AuthProvider>();
+    final detailProvider = context.read<DetailStoryProvider>();
+    Future.microtask(() async => detailProvider.fetchDetail(authProvider.token!, widget.userId));
   }
 
   @override
@@ -59,12 +54,11 @@ class _DetailScreenState extends State<DetailScreen> {
                           width: double.infinity,
                           height: MediaQuery.of(context).size.height * 0.5,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            border: Border.all(width: 1.0),
-                            borderRadius: BorderRadius.circular(8)
-                          ),
+                              color: Colors.grey[300],
+                              border: Border.all(width: 1.0),
+                              borderRadius: BorderRadius.circular(8)),
                           child: Image.network(
-                            fit: BoxFit.contain,
+                              fit: BoxFit.contain,
                               value.detailStories!.story.photoUrl),
                         ),
                         Text(value.detailStories!.story.name),
