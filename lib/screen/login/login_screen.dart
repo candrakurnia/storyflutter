@@ -209,7 +209,8 @@ class _LoginScreenState extends State<LoginScreen> {
   void _handleSignIn(context) async {
     LoginProvider loginProvider =
         Provider.of<LoginProvider>(context, listen: false);
-        AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
+    AuthProvider authProvider =
+        Provider.of<AuthProvider>(context, listen: false);
     String textEmail = emailController.text.toString();
     String textPassword = passwordController.text.toString();
 
@@ -221,8 +222,6 @@ class _LoginScreenState extends State<LoginScreen> {
           print("loading");
         }
         if (loginProvider.state == ResultState.hasData) {
-          print("object 1 ${loginProvider.loginModel.loginResult.userId}");
-          print("object 2 ${loginProvider.loginModel.loginResult.token}");
           final Session session = Session(
               session: loginProvider.loginModel.loginResult.userId,
               token: loginProvider.loginModel.loginResult.token);
