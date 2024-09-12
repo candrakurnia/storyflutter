@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:storyflutter/core.dart';
 import 'package:storyflutter/db/auth_repository.dart';
 import 'package:storyflutter/model/session.dart';
-import 'package:storyflutter/model/user.dart';
 import 'package:storyflutter/provider/all_stories_provider.dart';
 
-class AuthProvider extends ChangeNotifier{
+class AuthProvider extends ChangeNotifier {
   final AuthRepository authRepository;
 
   AuthProvider(this.authRepository) {
@@ -18,7 +17,7 @@ class AuthProvider extends ChangeNotifier{
   bool isLoggedIn = false;
   String? _token;
   String? get token => _token;
-  
+
   // Future<bool> login(User user) async {
   //   isLoadingLogin = true;
   //   notifyListeners();
@@ -36,18 +35,17 @@ class AuthProvider extends ChangeNotifier{
 
   Future<bool> sessionLogin(Session session) async {
     isLoadingLogin = true;
-    var saveSession = await authRepository.saveUser2(session);
-    print("save session : $saveSession");
+    authRepository.saveUser2(session);
+    // authRepository.setToken(session.token!);
     notifyListeners();
     final sessionUser = await authRepository.getUser();
-    print("session $session");
-    print("sessionUser $sessionUser");
     if (session == sessionUser) {
       authRepository.login();
-      await authRepository.setToken(session.token!);
+      // authRepository.setToken(sessionUser!.token!);
     }
     isLoggedIn = await authRepository.isLoggedIn();
     isLoadingLogin = false;
+    authRepository.setToken(session.token!);
     notifyListeners();
     return isLoggedIn;
   }
@@ -56,32 +54,20 @@ class AuthProvider extends ChangeNotifier{
     final token = await authRepository.getToken();
 
     if (token.isEmpty) {
+      print("token ternyata kosong");
       return;
+    } else {
+      await allStoriesProvider.fetchallStories(token);
+      print("token ternyata ada isinya");
+      notifyListeners();
     }
-
-    await allStoriesProvider.fetchallStories(token);
-    notifyListeners();
-
   }
 
-  //  void getDetailStories(DetailStoryProvider detailStoryProvider) async {
-  //   final token = await authRepository.getToken();
-
-  //   if (token.isEmpty) {
-  //     return;
-  //   }
-
-  //   await detailStoryProvider.fetchDetail(token, );
-  //   notifyListeners();
-
-  // }
-
-  Future<void> gettingToken() async {
+  void gettingToken() async {
     _token = await authRepository.getToken();
     print("data token $_token");
     notifyListeners();
   }
-
 
   Future<bool> logout() async {
     isLoadingLogout = true;
@@ -95,10 +81,11 @@ class AuthProvider extends ChangeNotifier{
     notifyListeners();
     return !isLoggedIn;
   }
-  Future<bool> saveUser(User user) async {
+
+  Future<bool> saveUser(Session user) async {
     isLoadingRegister = true;
     notifyListeners();
-    final userState = await authRepository.saveUser(user);
+    final userState = await authRepository.saveUser2(user);
     isLoadingRegister = false;
     notifyListeners();
     return userState;

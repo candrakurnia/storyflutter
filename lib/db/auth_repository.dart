@@ -1,5 +1,4 @@
 import 'package:storyflutter/model/session.dart';
-import 'package:storyflutter/model/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepository {
@@ -10,25 +9,25 @@ class AuthRepository {
  
   Future<bool> isLoggedIn() async {
     final preferences = await SharedPreferences.getInstance();
-    await Future.delayed(const Duration(seconds: 2));
+    // await Future.delayed(const Duration(seconds: 2));
     return preferences.getBool(stateKey) ?? false;
   }
  
   Future<bool> login() async {
     final preferences = await SharedPreferences.getInstance();
-    await Future.delayed(const Duration(seconds: 2));
+    // await Future.delayed(const Duration(seconds: 2));
     return preferences.setBool(stateKey, true);
   }
 
   Future<bool> setToken(String session) async {
     final preferences = await SharedPreferences.getInstance();
-    await Future.delayed(const Duration(seconds: 2));
+    // await Future.delayed(const Duration(seconds: 2));
     return preferences.setString(token, session);
   }
 
   Future<String> getToken() async {
     final preferences = await SharedPreferences.getInstance();
-    await Future.delayed(const Duration(seconds: 2));
+    // await Future.delayed(const Duration(seconds: 2));
     return preferences.getString(token) ?? "";
   }
 
@@ -38,20 +37,20 @@ class AuthRepository {
     return preferences.setBool(stateKey, false);
   }
 
-  Future<bool> saveUser(User user) async {
-    final preferences = await SharedPreferences.getInstance();
-    await Future.delayed(const Duration(seconds: 2));
-    return preferences.setString(token, user.toJson());
-  }
+  // Future<bool> saveUser(Session session) async {
+  //   final preferences = await SharedPreferences.getInstance();
+  //   await Future.delayed(const Duration(seconds: 2));
+  //   return preferences.setString(token, session.toJson());
+  // }
   Future<bool> deleteUser() async {
     final preferences = await SharedPreferences.getInstance();
-    await Future.delayed(const Duration(seconds: 2));
+    // await Future.delayed(const Duration(seconds: 2));
     return preferences.setString(token, "");
   }
 
   Future<bool> saveUser2(Session session) async {
     final preferences = await SharedPreferences.getInstance();
-    await Future.delayed(const Duration(seconds: 2));
+    // await Future.delayed(const Duration(seconds: 2));
     return preferences.setString(token, session.toJson());
   }
 
