@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:storyflutter/constant/result_state.dart';
+import 'package:storyflutter/model/session.dart';
 import 'package:storyflutter/model/user.dart';
 import 'package:storyflutter/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:storyflutter/provider/login_provider.dart';
 import 'package:storyflutter/provider/register_provider.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -108,7 +110,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    context.watch<AuthProvider>().isLoadingRegister
+                    context.watch<RegisterProvider>().isLoadingRegister
                         ? const Center(
                             child: CircularProgressIndicator(),
                           )
@@ -124,32 +126,17 @@ class _RegisterPageState extends State<RegisterPage> {
                               if (formKey.currentState!.validate()) {
                                 final scaffoldMessenger =
                                     ScaffoldMessenger.of(context);
-                                final User user = User(
-                                  email: email,
-                                  password: password,
-                                );
-                                final authRead = context.read<AuthProvider>();
-                                final result = await authRead.saveUser(user);
-
-                                if (result) {
-                                  await registerProvider.postRegister(
-                                      username, email, password);
-                                  if (registerProvider.state ==
-                                      ResultState.hasData) {
-                                    widget.onRegister();
-                                  } else if (registerProvider.state == ResultState.noData){
-                                     scaffoldMessenger.showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                          "There's some trouble, try again"),
-                                    ),
-                                  );
-                                  }
-                                } else {
+                                await registerProvider.postRegister(
+                                    username, email, password);
+                                if (registerProvider.state ==
+                                    ResultState.hasData) {
+                                  widget.onRegister();
+                                } else if (registerProvider.state ==
+                                    ResultState.noData) {
                                   scaffoldMessenger.showSnackBar(
                                     const SnackBar(
                                       content: Text(
-                                          "Your email or password is invalid"),
+                                          "There's some trouble, try again"),
                                     ),
                                   );
                                 }
