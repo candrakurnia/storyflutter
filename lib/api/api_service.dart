@@ -119,6 +119,7 @@ class ApiService {
     List<int> bytes,
     String fileName,
     String description,
+    String token,
   ) async {
     const String url = "$_baseUrl/stories";
  
@@ -135,6 +136,7 @@ class ApiService {
     };
     final Map<String, String> headers = {
       "Content-type": "multipart/form-data",
+      "Authorization": "Bearer $token",
     };
  
     request.files.add(multiPartFile);
