@@ -3,6 +3,7 @@ import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:storyflutter/api/api_service.dart';
 import 'package:storyflutter/model/upload_response.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UploadProvider extends ChangeNotifier {
   final ApiService apiService;
@@ -14,6 +15,7 @@ class UploadProvider extends ChangeNotifier {
   UploadResponse? uploadResponse;
   String? imagePath;
   XFile? imagefile;
+  String? text;
 
   void setImageFile(XFile? value) {
     imagefile = value;
@@ -22,6 +24,11 @@ class UploadProvider extends ChangeNotifier {
 
   void setImagePath(String? value) {
     imagePath = value;
+    notifyListeners();
+  }
+
+  void setText(String? value) {
+    text = value;
     notifyListeners();
   }
 
@@ -48,14 +55,18 @@ class UploadProvider extends ChangeNotifier {
   Future<void> upload(
     List<int> bytes,
     String fileName,
-    String description,
-    String token
+    String description
   ) async {
     try {
       message = "";
       uploadResponse = null;
       isUploading = true;
       notifyListeners();
+      final sharedPref = await SharedPreferences.getInstance();
+      final token = sharedPref.getString("token") ?? "";
+      if (token.isEmpty) {
+        print("Token kosong");
+      }
       uploadResponse =
           await ApiService().sendPhoto(bytes, fileName, description, token);
       message = uploadResponse?.message ?? "success";

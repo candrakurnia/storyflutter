@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:storyflutter/api/api_service.dart';
 import 'package:storyflutter/constant/result_state.dart';
+import 'package:storyflutter/core.dart';
 import 'package:storyflutter/model/detail_stories.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storyflutter/provider/auth_provider.dart';
 
 class DetailStoryProvider extends ChangeNotifier {
   final ApiService apiService;
@@ -16,25 +19,30 @@ class DetailStoryProvider extends ChangeNotifier {
   ResultState? get resultState => _resultState;
   String get message => _message;
 
-  Future<dynamic> fetchDetail(String token, String id) async {
+  void fetchDetail(String id) async {
     try {
       _resultState = ResultState.loading;
       notifyListeners();
+      final sharedPref = await SharedPreferences.getInstance();
+      final token = sharedPref.getString("token") ?? "";
+      if (token.isEmpty) {
+        print("Token kosong");
+      }
       var response = await ApiService().getDetailStory(token, id);
       if (response.error == false) {
         _resultState = ResultState.hasData;
         _message = response.message;
+        _detailStories = response;
         notifyListeners();
-        return _detailStories = response;
       } else {
         _resultState = ResultState.noData;
         notifyListeners();
-        return _message = response.message;
+        _message = response.message;
       }
     } catch (e) {
       _resultState = ResultState.error;
       notifyListeners();
-      return _message = "Error ==> $e";
+      _message = "Error ==> $e";
     }
   }
 }
