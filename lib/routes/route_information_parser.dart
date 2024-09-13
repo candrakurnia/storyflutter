@@ -19,7 +19,10 @@ class MyRouteInformationParser
         return PageConfiguration.register();
       } else if (first == 'splash') {
         return PageConfiguration.splash();
-      } else {
+      } else if (first == 'postStory') {
+        return PageConfiguration.post();
+      }
+      else {
         return PageConfiguration.unknown();
       }
     } else if (uri.pathSegments.length == 2) {
@@ -51,6 +54,8 @@ RouteInformation? restoreRouteInformation(PageConfiguration configuration) {
     return const RouteInformation(location: '/');
   } else if (configuration.isDetailPage) {
     return RouteInformation(location: '/detail/${configuration.userId}');
+  } else if(configuration.isPostpage) {
+    return const RouteInformation(location: '/postStory');
   }
   else {
     return null;

@@ -6,6 +6,7 @@ import 'package:storyflutter/screen/login/login_screen.dart';
 import 'package:storyflutter/model/page_configuration.dart';
 import 'package:storyflutter/screen/register/register_screen.dart';
 import 'package:storyflutter/screen/splash/splashscreen.dart';
+import 'package:storyflutter/screen/story/post_story.dart';
 
 class MyRouterDelegate extends RouterDelegate<PageConfiguration>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
@@ -15,6 +16,7 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
   bool? isLoggedIn;
   bool? isRegister = false;
   bool? isUnknown;
+  bool? isPosted;
 
   List<Page> historyStack = [];
 
@@ -53,7 +55,18 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
             ),
           ),
       ];
-
+  List<Page> get _postStack => [
+        MaterialPage(
+          key: const ValueKey("PostPage"),
+          child: PostStoryScreen(
+            onPosted: () {
+              isLoggedIn = true;
+              isPosted = false;
+              notifyListeners();
+            },
+          ),
+        ),
+      ];
   List<Page> get _loggedInStack => [
         MaterialPage(
           key: const ValueKey("HomeStory"),
@@ -64,6 +77,11 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
             },
             onTapped: (String id) {
               selectedUser = id;
+              notifyListeners();
+            },
+            onPosted: () {
+              isLoggedIn = true;
+              isPosted = true;
               notifyListeners();
             },
           ),
@@ -93,7 +111,9 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
   Widget build(BuildContext context) {
     if (isLoggedIn == null) {
       historyStack = _splashStack;
-    } else if (isLoggedIn == true) {
+    } else if (isLoggedIn == true && isPosted == true) {
+      historyStack = _loggedInStack + _postStack;
+    } else if (isLoggedIn == true && isPosted == false) {
       historyStack = _loggedInStack;
     } else {
       historyStack = _loggedOutStack;
@@ -107,6 +127,7 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
           return false;
         }
         isRegister = false;
+        isPosted = false;
         selectedUser = null;
         notifyListeners();
 
@@ -131,10 +152,15 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
       isUnknown = false;
       isRegister = false;
       selectedUser = null;
+      isPosted = false;
     } else if (configuration.isDetailPage) {
       isUnknown = false;
       isRegister = false;
       selectedUser = configuration.userId.toString();
+    } else if (configuration.isPostpage) {
+      isUnknown = false;
+      isRegister = false;
+      isPosted = true;
     } else {
       print(' Could not set new route');
     }
@@ -155,6 +181,8 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
       return PageConfiguration.home();
     } else if (selectedUser != null) {
       return PageConfiguration.detail(selectedUser!);
+    } else if (isPosted == true) {
+      return PageConfiguration.post();
     } else {
       return null;
     }
