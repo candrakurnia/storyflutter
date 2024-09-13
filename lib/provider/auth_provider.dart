@@ -35,13 +35,12 @@ class AuthProvider extends ChangeNotifier {
 
   Future<bool> sessionLogin(Session session) async {
     isLoadingLogin = true;
-    authRepository.saveUser2(session);
+    await authRepository.saveUser2(session);
     // authRepository.setToken(session.token!);
     notifyListeners();
     final sessionUser = await authRepository.getUser();
     if (session == sessionUser) {
       authRepository.login();
-      // authRepository.setToken(sessionUser!.token!);
     }
     isLoggedIn = await authRepository.isLoggedIn();
     isLoadingLogin = false;
