@@ -110,69 +110,62 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white,
-                      ),
-                      onPressed: () {
-                        _handleSignIn(context);
-                      },
-                      child: const Text("Login"),
-                    ),
-                    // context.watch<AuthProvider>().isLoadingLogin
-                    //     ? const Center(
-                    //         child: CircularProgressIndicator(),
-                    //       )
-                    //     : ElevatedButton(
-                    //         onPressed: () async {
-                    //           LoginProvider loginProvider =
-                    //               Provider.of<LoginProvider>(context,
-                    //                   listen: false);
-                    //           String textEmail =
-                    //               emailController.text.toString();
-                    //           String textPassword =
-                    //               passwordController.text.toString();
-                    //           if (formKey.currentState!.validate()) {
-                    //             final scaffoldMessenger =
-                    //                 ScaffoldMessenger.of(context);
-                    //             // final User user = User(
-                    //             //   email: textEmail,
-                    //             //   password: textPassword,
-                    //             // );
-                    //             final Session session = Session(
-                    //                 session: loginProvider
-                    //                     .loginModel.loginResult.userId,
-                    //                 token: loginProvider
-                    //                     .loginModel.loginResult.token);
-                    //             final authRead = context.read<AuthProvider>();
-                    //             final result = await authRead.sessionLogin(session);
-                    //             if (result) {
-                    //               await loginProvider.postLogin(
-                    //                   textEmail, textPassword);
-                    //               if (loginProvider.state ==
-                    //                   ResultState.hasData) {
-                    //                 widget.onLogin();
-                    //               } else if (loginProvider.state ==
-                    //                   ResultState.noData) {
-                    //                 scaffoldMessenger.showSnackBar(
-                    //                   SnackBar(
-                    //                     content: Text(loginProvider.message),
-                    //                   ),
-                    //                 );
-                    //               }
-                    //             } else {
-                    //               scaffoldMessenger.showSnackBar(
-                    //                 const SnackBar(
-                    //                   content: Text(
-                    //                       "Your email or password is invalid"),
-                    //                 ),
-                    //               );
-                    //             }
-                    //           }
-                    //         },
-                    //         child: const Text("Login"),
-                    //       ),
+                    // ElevatedButton(
+                    //   style: ElevatedButton.styleFrom(
+                    //     backgroundColor: Colors.black,
+                    //     foregroundColor: Colors.white,
+                    //   ),
+                    //   onPressed: () {
+                    //     _handleSignIn(context);
+                    //   },
+                    //   child: const Text("Login"),
+                    // ),
+                    context.watch<LoginProvider>().isLoadingLogin
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : ElevatedButton(
+                            onPressed: () async {
+                              String textEmail =
+                                  emailController.text.toString();
+                              String textPassword =
+                                  passwordController.text.toString();
+                              if (formKey.currentState!.validate()) {
+                                final scaffoldMessenger =
+                                    ScaffoldMessenger.of(context);
+                                if (textEmail.isNotEmpty &&
+                                    textPassword.isNotEmpty) {
+                                  final authRead = context.read<AuthProvider>();
+                                  final goLogin = context.read<LoginProvider>();
+                                  await goLogin.postLogin(
+                                      textEmail, textPassword);
+                                  if (goLogin.state == ResultState.hasData) {
+                                    final Session session = Session(
+                                        session: goLogin
+                                            .loginModel.loginResult.userId,
+                                        token: goLogin
+                                            .loginModel.loginResult.token);
+                                    await authRead.sessionLogin(session);
+                                    widget.onLogin();
+                                  } else if (goLogin.state ==
+                                      ResultState.noData) {
+                                    scaffoldMessenger.showSnackBar(
+                                      SnackBar(
+                                        content: Text(goLogin.message),
+                                      ),
+                                    );
+                                  }
+                                } else {
+                                  scaffoldMessenger.showSnackBar(
+                                    const SnackBar(
+                                      content: Text("goLogin.message"),
+                                    ),
+                                  );
+                                }
+                              }
+                            },
+                            child: const Text("Login"),
+                          ),
                     const SizedBox(
                       height: 8,
                     ),
