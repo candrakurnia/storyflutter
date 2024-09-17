@@ -22,24 +22,23 @@ class LoginProvider extends ChangeNotifier {
   Future<dynamic> postLogin(email, password) async {
     try {
       _resultState = ResultState.loading;
-      isLoadingLogin = false;
+      isLoadingLogin = true;
       notifyListeners();
       final result = await ApiService().goLogin(email, password);
-      print(result);
       if (result.error == false) {
         _resultState = ResultState.hasData;
-        isLoadingLogin = true;
+        isLoadingLogin = false;
         notifyListeners();
         return _loginModel = result;
       } else {
         _resultState = ResultState.noData;
-        isLoadingLogin = true;
+        isLoadingLogin = false;
         notifyListeners();
         return _message = result.message;
       }
     } catch (e) {
       _resultState = ResultState.error;
-      isLoadingLogin = true;
+      isLoadingLogin = false;
       print("error hit login $e");
       notifyListeners();
       return _message = "error ==> $e";
