@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:storyflutter/constant/result_state.dart';
-import 'package:storyflutter/model/session.dart';
-import 'package:storyflutter/model/user.dart';
-import 'package:storyflutter/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:storyflutter/provider/login_provider.dart';
 import 'package:storyflutter/provider/register_provider.dart';
 
 class RegisterPage extends StatefulWidget {
