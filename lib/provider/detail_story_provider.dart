@@ -4,7 +4,6 @@ import 'package:storyflutter/constant/result_state.dart';
 import 'package:storyflutter/core.dart';
 import 'package:storyflutter/model/detail_stories.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:storyflutter/provider/auth_provider.dart';
 
 class DetailStoryProvider extends ChangeNotifier {
   final ApiService apiService;
