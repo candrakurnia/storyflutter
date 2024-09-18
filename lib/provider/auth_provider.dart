@@ -53,18 +53,18 @@ class AuthProvider extends ChangeNotifier {
     final token = await authRepository.getToken();
 
     if (token.isEmpty) {
-      print("token ternyata kosong");
+      debugPrint("token ternyata kosong");
       return;
     } else {
       await allStoriesProvider.fetchallStories(token);
-      print("token ternyata ada isinya");
+      debugPrint("token ternyata ada isinya");
       notifyListeners();
     }
   }
 
   void gettingToken() async {
     _token = await authRepository.getToken();
-    print("data token $_token");
+    debugPrint("data token $_token");
     notifyListeners();
   }
 
