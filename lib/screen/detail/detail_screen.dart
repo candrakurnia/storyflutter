@@ -21,7 +21,6 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   void initState() {
     super.initState();
-    final authProvider = context.read<AuthProvider>();
     final detailProvider = context.read<DetailStoryProvider>();
     Future.microtask(() async => detailProvider.fetchDetail(widget.userId));
   }
@@ -43,7 +42,11 @@ class _DetailScreenState extends State<DetailScreen> {
               return Container(
                 width: double.infinity,
                 height: MediaQuery.of(context).size.height,
-                decoration: const BoxDecoration(color: Colors.amber),
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/images/ic_background.png'),
+                      fit: BoxFit.cover),
+                ),
                 child: Padding(
                     padding: const EdgeInsets.all(8),
                     child: Column(
