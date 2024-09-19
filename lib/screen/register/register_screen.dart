@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:storyflutter/common/common.dart';
 import 'package:storyflutter/constant/result_state.dart';
 import 'package:provider/provider.dart';
 import 'package:storyflutter/provider/register_provider.dart';
@@ -51,11 +52,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     const SizedBox(
                       height: 16,
                     ),
-                    const Align(
+                    Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Please Register First",
-                        style: TextStyle(
+                        AppLocalizations.of(context)!.register_title,
+                        style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w600),
                       ),
                     ),
@@ -68,7 +69,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       decoration: InputDecoration(
                         fillColor: Colors.white,
                         filled: true,
-                        label: const Text("Username"),
+                        label: Text(AppLocalizations.of(context)!.register_form_text),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -83,7 +84,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       decoration: InputDecoration(
                         fillColor: Colors.white,
                         filled: true,
-                        label: const Text("Email"),
+                        label: Text(AppLocalizations.of(context)!.email_text),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -99,7 +100,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       decoration: InputDecoration(
                         fillColor: Colors.white,
                         filled: true,
-                        label: const Text("Password"),
+                        label: Text(AppLocalizations.of(context)!.password_text),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -138,14 +139,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                 }
                               }
                             },
-                            child: const Text("Register"),
+                            child: Text(AppLocalizations.of(context)!.register_text),
                           ),
                     const SizedBox(
                       height: 8,
                     ),
-                    const Text(
-                      "Already have an account?",
-                      style: TextStyle(fontSize: 12, color: Colors.white),
+                    Text(
+                      AppLocalizations.of(context)!.register_txt,
+                      style: const TextStyle(fontSize: 12, color: Colors.white),
                     ),
                     const SizedBox(
                       height: 4,
@@ -157,9 +158,9 @@ class _RegisterPageState extends State<RegisterPage> {
                       onPressed: () {
                         widget.onLogin();
                       },
-                      child: const Text(
-                        "Login",
-                        style: TextStyle(color: Colors.white),
+                      child: Text(
+                        AppLocalizations.of(context)!.register_buttonLogin,
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                   ],
