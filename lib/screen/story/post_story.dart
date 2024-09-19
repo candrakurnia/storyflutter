@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:storyflutter/common/common.dart';
 import 'package:storyflutter/provider/all_stories_provider.dart';
 import 'package:storyflutter/provider/auth_provider.dart';
 import 'package:storyflutter/provider/upload_provider.dart';
@@ -24,7 +25,7 @@ class _PostStoryScreenState extends State<PostStoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Post Your Story"),
+        title: Text(AppLocalizations.of(context)!.postText),
         actions: [
           IconButton(
             onPressed: () => _onUpload(),
@@ -41,7 +42,7 @@ class _PostStoryScreenState extends State<PostStoryScreen> {
         onPopInvoked: (didPop) {
           final authProvider = context.read<AuthProvider>();
           final allProvider = context.read<AllStoriesProvider>();
-          authProvider.getAllStories(allProvider);
+          // authProvider.getAllStories(allProvider);
         },
         child: SafeArea(
           child: Column(

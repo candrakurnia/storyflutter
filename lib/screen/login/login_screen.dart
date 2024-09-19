@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:storyflutter/common/common.dart';
 import 'package:storyflutter/constant/result_state.dart';
 import 'package:storyflutter/model/session.dart';
 import 'package:provider/provider.dart';
@@ -56,11 +57,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(
                       height: 16,
                     ),
-                    const Align(
+                    Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Please Login First",
-                        style: TextStyle(
+                        AppLocalizations.of(context)!.login_title,
+                        style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w600),
                       ),
                     ),
@@ -73,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       decoration: InputDecoration(
                         fillColor: Colors.white,
                         filled: true,
-                        label: const Text("Email"),
+                        label: Text(AppLocalizations.of(context)!.email_text),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -96,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       decoration: InputDecoration(
                         fillColor: Colors.white,
                         filled: true,
-                        label: const Text("Password"),
+                        label: Text(AppLocalizations.of(context)!.password_text),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -164,15 +165,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                 }
                               }
                             },
-                            child: const Text("Login"),
+                            child: Text(AppLocalizations.of(context)!.register_buttonLogin),
                           ),
                     const SizedBox(
                       height: 8,
                     ),
-                    const Text(
-                      "Don't have an account yet?",
+                    Text(
+                      AppLocalizations.of(context)!.sub_text,
                       style:
-                          TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
+                         const TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
                     ),
                     const SizedBox(
                       height: 8,
@@ -184,9 +185,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         widget.onRegister();
                       },
-                      child: const Text(
-                        "Register Now",
-                        style: TextStyle(color: Colors.white),
+                      child: Text(
+                        AppLocalizations.of(context)!.register_btn,
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                   ],

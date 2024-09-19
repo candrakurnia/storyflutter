@@ -23,6 +23,7 @@ class RegisterProvider extends ChangeNotifier {
       isLoadingRegister = true;
       notifyListeners();
       var result = await ApiService().goRegister(email, password, name);
+      print(result);
       if (result.error == false) {
         _resultState = ResultState.hasData;
         isLoadingRegister = false;
