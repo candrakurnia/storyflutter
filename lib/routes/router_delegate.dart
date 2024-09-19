@@ -4,6 +4,7 @@ import 'package:storyflutter/screen/detail/detail_screen.dart';
 import 'package:storyflutter/screen/home/home_screen.dart';
 import 'package:storyflutter/screen/login/login_screen.dart';
 import 'package:storyflutter/model/page_configuration.dart';
+import 'package:storyflutter/screen/maps/maps_screen.dart';
 import 'package:storyflutter/screen/register/register_screen.dart';
 import 'package:storyflutter/screen/splash/splashscreen.dart';
 import 'package:storyflutter/screen/story/post_story.dart';
@@ -17,6 +18,7 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
   bool? isRegister = false;
   bool? isUnknown;
   bool? isPosted;
+  bool? isLocation;
 
   List<Page> historyStack = [];
 
@@ -67,6 +69,16 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
           ),
         ),
       ];
+  List<Page> get _locStack => [
+        MaterialPage(
+          child: MapsScreen(
+            onMaps : () {
+              isLocation = true;
+              notifyListeners();
+            }
+          ),
+        ),
+      ];
   List<Page> get _loggedInStack => [
         MaterialPage(
           key: const ValueKey("HomeStory"),
@@ -84,6 +96,11 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
               isPosted = true;
               notifyListeners();
             },
+            onMaps : () {
+              isLoggedIn = true;
+              isLocation = true;
+              notifyListeners();
+            }
           ),
         ),
         if (selectedUser != null)
@@ -113,6 +130,8 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
       historyStack = _splashStack;
     } else if (isLoggedIn == true && isPosted == true) {
       historyStack = _loggedInStack + _postStack;
+    } else if (isLoggedIn == true && isLocation == true) {
+      historyStack = _loggedInStack + _locStack;
     } else if (isLoggedIn == true && isPosted == false) {
       historyStack = _loggedInStack;
     } else {
@@ -128,6 +147,7 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
         }
         isRegister = false;
         isPosted = false;
+        isLocation = false;
         selectedUser = null;
         notifyListeners();
 

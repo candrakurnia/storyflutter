@@ -21,6 +21,8 @@ class MyRouteInformationParser
         return PageConfiguration.splash();
       } else if (first == 'postStory') {
         return PageConfiguration.post();
+      } else if (first == 'locStory') {
+        return PageConfiguration.locPage();
       }
       else {
         return PageConfiguration.unknown();
@@ -56,6 +58,8 @@ RouteInformation? restoreRouteInformation(PageConfiguration configuration) {
     return RouteInformation(location: '/detail/${configuration.userId}');
   } else if(configuration.isPostpage) {
     return const RouteInformation(location: '/postStory');
+  } else if(configuration.isLocPage) {
+    return const RouteInformation(location: '/locStory');
   }
   else {
     return null;
