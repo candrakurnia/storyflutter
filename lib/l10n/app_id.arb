@@ -1,0 +1,14 @@
+{
+    "login_title": "Mohon Login Dahulu",
+    "email_text": "Email",
+    "password_text": "Kata Sandi",
+    "sub_text": "Belum Memiliki akun?",
+    "register_btn": "Daftar Sekarang",
+    "register_title": "Mohon Daftar Dahulu",
+    "register_text": "Daftar",
+    "register_txt": "Sudah Memiliki Akun?",
+    "register_buttonLogin": "Masuk",
+    "register_form_text": "Nama Pendek",
+    "locationButton": "Lihat Lokasi",
+    "postText": "Unggah Fotomu"
+}

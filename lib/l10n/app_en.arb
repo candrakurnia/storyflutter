@@ -1,0 +1,14 @@
+{
+    "login_title": "Please Login First",
+    "email_text": "Email",
+    "password_text": "Password",
+    "sub_text": "Don't have an account yet?",
+    "register_btn": "Register Now",
+    "register_title": "Please Register First",
+    "register_text": "Register",
+    "register_txt": "Already have an account?",
+    "register_buttonLogin": "Login",
+    "register_form_text": "Username",
+    "locationButton": "See Location",
+    "postText": "Post Your Story"
+}
