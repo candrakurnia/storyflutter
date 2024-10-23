@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:storyflutter/common/common.dart';
 import 'package:storyflutter/constant/result_state.dart';
 import 'package:provider/provider.dart';
+import 'package:storyflutter/core.dart';
 import 'package:storyflutter/provider/register_provider.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -131,9 +132,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                 } else if (registerProvider.state ==
                                     ResultState.noData) {
                                   scaffoldMessenger.showSnackBar(
-                                    const SnackBar(
+                                    SnackBar(
                                       content: Text(
-                                          "There's some trouble, try again"),
+                                          registerProvider.message),
                                     ),
                                   );
                                 }
