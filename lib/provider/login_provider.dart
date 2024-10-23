@@ -25,12 +25,13 @@ class LoginProvider extends ChangeNotifier {
       isLoadingLogin = true;
       notifyListeners();
       final result = await ApiService().goLogin(email, password);
+      print("object result ${result.error}");
       if (result.error == false) {
         _resultState = ResultState.hasData;
         isLoadingLogin = false;
         notifyListeners();
         return _loginModel = result;
-      } else {
+      } else if (result.error == true) {
         _resultState = ResultState.noData;
         isLoadingLogin = false;
         notifyListeners();

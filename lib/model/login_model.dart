@@ -17,12 +17,12 @@ class LoginModel {
   // @JsonKey(name: "login_result")
   bool error;
   String message;
-  LoginResult loginResult;
+  LoginResult? loginResult;
 
   LoginModel({
     required this.error,
     required this.message,
-    required this.loginResult,
+    this.loginResult,
   });
 
   factory LoginModel.fromJson(Map<String, dynamic> json) =>

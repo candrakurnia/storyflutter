@@ -20,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  bool _obscureText = true;
 
   @override
   void dispose() {
@@ -92,12 +93,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     TextFormField(
                       controller: passwordController,
-                      obscureText: true,
+                      obscureText: _obscureText,
                       keyboardType: TextInputType.visiblePassword,
                       decoration: InputDecoration(
                         fillColor: Colors.white,
                         filled: true,
-                        label: Text(AppLocalizations.of(context)!.password_text),
+                        label:
+                            Text(AppLocalizations.of(context)!.password_text),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -111,69 +113,24 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    // ElevatedButton(
-                    //   style: ElevatedButton.styleFrom(
-                    //     backgroundColor: Colors.black,
-                    //     foregroundColor: Colors.white,
-                    //   ),
-                    //   onPressed: () {
-                    //     _handleSignIn(context);
-                    //   },
-                    //   child: const Text("Login"),
-                    // ),
                     context.watch<LoginProvider>().isLoadingLogin
                         ? const Center(
                             child: CircularProgressIndicator(),
                           )
                         : ElevatedButton(
                             onPressed: () async {
-                              String textEmail =
-                                  emailController.text.toString();
-                              String textPassword =
-                                  passwordController.text.toString();
-                              if (formKey.currentState!.validate()) {
-                                final scaffoldMessenger =
-                                    ScaffoldMessenger.of(context);
-                                if (textEmail.isNotEmpty &&
-                                    textPassword.isNotEmpty) {
-                                  final authRead = context.read<AuthProvider>();
-                                  final goLogin = context.read<LoginProvider>();
-                                  await goLogin.postLogin(
-                                      textEmail, textPassword);
-                                  if (goLogin.state == ResultState.hasData) {
-                                    final Session session = Session(
-                                        session: goLogin
-                                            .loginModel.loginResult.userId,
-                                        token: goLogin
-                                            .loginModel.loginResult.token);
-                                    await authRead.sessionLogin(session);
-                                    widget.onLogin();
-                                  } else if (goLogin.state ==
-                                      ResultState.noData) {
-                                    scaffoldMessenger.showSnackBar(
-                                      SnackBar(
-                                        content: Text(goLogin.message),
-                                      ),
-                                    );
-                                  }
-                                } else {
-                                  scaffoldMessenger.showSnackBar(
-                                    const SnackBar(
-                                      content: Text("goLogin.message"),
-                                    ),
-                                  );
-                                }
-                              }
+                              _handleSignIn(context);
                             },
-                            child: Text(AppLocalizations.of(context)!.register_buttonLogin),
+                            child: Text(AppLocalizations.of(context)!
+                                .register_buttonLogin),
                           ),
                     const SizedBox(
                       height: 8,
                     ),
                     Text(
                       AppLocalizations.of(context)!.sub_text,
-                      style:
-                         const TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
+                      style: const TextStyle(
+                          fontSize: 10, fontWeight: FontWeight.w400),
                     ),
                     const SizedBox(
                       height: 8,
@@ -200,37 +157,32 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _handleSignIn(context) async {
-    LoginProvider loginProvider =
-        Provider.of<LoginProvider>(context, listen: false);
-    AuthProvider authProvider =
-        Provider.of<AuthProvider>(context, listen: false);
+  void _handleSignIn(BuildContext context) async {
     String textEmail = emailController.text.toString();
     String textPassword = passwordController.text.toString();
-
     if (formKey.currentState!.validate()) {
       final scaffoldMessenger = ScaffoldMessenger.of(context);
       if (textEmail.isNotEmpty && textPassword.isNotEmpty) {
-        await loginProvider.postLogin(textEmail, textPassword);
-        if (loginProvider.state == ResultState.loading) {
-          print("loading");
-        }
-        if (loginProvider.state == ResultState.hasData) {
+        final authRead = context.read<AuthProvider>();
+        final goLogin = context.read<LoginProvider>();
+        await goLogin.postLogin(textEmail, textPassword);
+        if (goLogin.state == ResultState.hasData) {
           final Session session = Session(
-              session: loginProvider.loginModel.loginResult.userId,
-              token: loginProvider.loginModel.loginResult.token);
-          final result = await authProvider.sessionLogin(session);
-          if (result) {
-            widget.onLogin();
-          }
-        } else if (loginProvider.state == ResultState.noData) {
-          scaffoldMessenger
-              .showSnackBar(SnackBar(content: Text(loginProvider.message)));
+              session: goLogin.loginModel.loginResult!.userId,
+              token: goLogin.loginModel.loginResult!.token);
+          await authRead.sessionLogin(session);
+          widget.onLogin();
+        } else if (goLogin.state == ResultState.noData) {
+          scaffoldMessenger.showSnackBar(
+            SnackBar(
+              content: Text(goLogin.message),
+            ),
+          );
         }
       } else {
         scaffoldMessenger.showSnackBar(
           const SnackBar(
-            content: Text("Your email or password is invalid"),
+            content: Text("goLogin.message"),
           ),
         );
       }
