@@ -49,18 +49,19 @@ class AuthProvider extends ChangeNotifier {
     return isLoggedIn;
   }
 
-  void getAllStories(AllStoriesProvider allStoriesProvider) async {
-    final token = await authRepository.getToken();
+  // void getAllStories(AllStoriesProvider allStoriesProvider) async {
+  //   final token = await authRepository.getToken();
 
-    if (token.isEmpty) {
-      debugPrint("token ternyata kosong");
-      return;
-    } else {
-      await allStoriesProvider.fetchallStories(token);
-      debugPrint("token ternyata ada isinya");
-      notifyListeners();
-    }
-  }
+  //   if (token.isEmpty) {
+  //     debugPrint("token ternyata kosong");
+  //     return;
+  //   } else {
+  //     allStoriesProvider.pageItems = 1;
+  //     await allStoriesProvider.fetchallStories(token);
+  //     debugPrint("token ternyata ada isinya");
+  //     notifyListeners();
+  //   }
+  // }
 
   void gettingToken() async {
     _token = await authRepository.getToken();
