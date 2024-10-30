@@ -29,10 +29,6 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
   final ScrollController scrollController = ScrollController();
   @override
   void initState() {
-    // AuthProvider authProvider =
-    //     Provider.of<AuthProvider>(context, listen: false);
-    // authProvider.gettingToken();
-    // authProvider.getAllStories(context.read<AllStoriesProvider>());
     super.initState();
     final allProvider = context.read<AllStoriesProvider>();
     scrollController.addListener(() {
