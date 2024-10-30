@@ -70,53 +70,6 @@ class _DetailScreenState extends State<DetailScreen> {
             final myLocation = LatLng(
                 value.detailStories?.story.lat ?? -6.2417431,
                 value.detailStories?.story.lon ?? 107.0080811);
-            // return Container(
-            //   width: double.infinity,
-            //   // height: MediaQuery.of(context).size.height,
-            //   decoration: const BoxDecoration(color: Colors.white),
-            //   child: Padding(
-            //     padding: const EdgeInsets.all(8),
-            //     child: Column(
-            //       mainAxisAlignment: MainAxisAlignment.start,
-            //       crossAxisAlignment: CrossAxisAlignment.stretch,
-            //       children: [
-            //         Image.network(
-            //             fit: BoxFit.contain,
-            //             value.detailStories!.story.photoUrl),
-            //         Text(value.detailStories!.story.name),
-            //         const SizedBox(
-            //           height: 8.0,
-            //         ),
-            //         Text(value.detailStories!.story.description),
-            //         Text(
-            //           DateFormat('EEEE, MM/d/y HH:mm').format(
-            //             DateTime.parse(
-            //               value.detailStories!.story.createdAt.toString(),
-            //             ),
-            //           ),
-            //           style: const TextStyle(
-            //               fontSize: 14.0, fontWeight: FontWeight.w400),
-            //         ),
-            //         SizedBox(
-            //           width: double.infinity,
-            //           height: 500,
-            //           child: GoogleMap(
-            //             initialCameraPosition: CameraPosition(
-            //               zoom: 18,
-            //               target: myLocation,
-            //             ),
-            //             markers: markers,
-            //             onMapCreated: (controller) {
-            //               setState(() {
-            //                 mapController = controller;
-            //               });
-            //             },
-            //           ),
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // );
             return Stack(
               children: [
                 SizedBox(

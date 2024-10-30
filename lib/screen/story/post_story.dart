@@ -1,12 +1,16 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:storyflutter/common/common.dart';
 import 'package:storyflutter/provider/all_stories_provider.dart';
 import 'package:storyflutter/provider/auth_provider.dart';
 import 'package:storyflutter/provider/upload_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:location/location.dart';
+import 'package:geocoding/geocoding.dart' as geo;
+import 'package:storyflutter/screen/maps/widgets/placemark.dart';
 
 class PostStoryScreen extends StatefulWidget {
   final Function() onPosted;
@@ -18,11 +22,20 @@ class PostStoryScreen extends StatefulWidget {
 }
 
 class _PostStoryScreenState extends State<PostStoryScreen> {
+  late GoogleMapController mapController;
+  final Set<Marker> markers = {};
+  geo.Placemark? placemark;
+   final Location location = Location();
+    late bool serviceEnabled;
+    late PermissionStatus permissionGranted;
+    late LocationData locationData;
+
   final _formKey = GlobalKey<FormState>();
   TextEditingController description = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    var myLocation = const LatLng(-6.2417431, 107.0080811);
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.postText),
@@ -92,6 +105,60 @@ class _PostStoryScreenState extends State<PostStoryScreen> {
                   ),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: SizedBox(
+                  height: 250,
+                  child: Stack(
+                    children: [
+                      GoogleMap(
+                        initialCameraPosition: CameraPosition(
+                          zoom: 18,
+                          target: myLocation,
+                        ),
+                        myLocationButtonEnabled: true,
+                        zoomControlsEnabled: false,
+                        mapToolbarEnabled: false,
+                        markers: markers,
+                        onMapCreated: (controller) async {
+                          final info = await geo.placemarkFromCoordinates(
+                              myLocation.latitude, myLocation.longitude);
+                          print(info);
+                          final place = info[0];
+                          final street = place.street!;
+                          final address =
+                              '${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+                          setState(() {
+                            placemark = place;
+                          });
+                          defineMarker(myLocation, street, address);
+                          setState(() {
+                            mapController = controller;
+                          });
+                        },
+                      ),
+                      Positioned(
+                        child: FloatingActionButton(
+                            child: const Icon(Icons.location_city),
+                            onPressed: () {
+                              onMyLocationButtonPress();
+                            }),
+                      ),
+                      // if (placemark == null)
+                      //   const SizedBox()
+                      // else
+                      //   Positioned(
+                      //     bottom: 16,
+                      //     right: 16,
+                      //     left: 16,
+                      //     child: PlacemarkWidget(
+                      //       placemark: placemark!,
+                      //     ),
+                      //   ),
+                    ],
+                  ),
+                ),
+              ),
               Expanded(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -105,10 +172,6 @@ class _PostStoryScreenState extends State<PostStoryScreen> {
                       onPressed: () => _onCameraView(),
                       child: const Text("Camera"),
                     ),
-                    ElevatedButton(
-                      onPressed: () => _onCustomCameraView(),
-                      child: const Text("Custom Camera"),
-                    ),
                   ],
                 ),
               )
@@ -119,7 +182,22 @@ class _PostStoryScreenState extends State<PostStoryScreen> {
     );
   }
 
+  void defineMarker(LatLng latLng, String street, String address) {
+    final marker = Marker(
+        markerId: const MarkerId("source"),
+        position: latLng,
+        infoWindow: InfoWindow(
+          title: street,
+          snippet: address,
+        ));
+    setState(() {
+      markers.clear();
+      markers.add(marker);
+    });
+  }
+
   _onUpload() async {
+    locationData = await location.getLocation();
     final ScaffoldMessengerState scaffoldMessengerState =
         ScaffoldMessenger.of(context);
     final uploadProvider = context.read<UploadProvider>();
@@ -130,12 +208,15 @@ class _PostStoryScreenState extends State<PostStoryScreen> {
     final filename = imageFile.name;
     final bytes = await imageFile.readAsBytes();
     final newBytes = await uploadProvider.compressImage(bytes);
+    final lati = await locationData.latitude;
+    final longi = await locationData.longitude;
+    print("data lati $lati");
+    print("data longi $longi");
 
     if (_formKey.currentState!.validate()) {
       var descriptionText = description.text;
 
-      await uploadProvider.upload(
-          newBytes, filename, descriptionText);
+      await uploadProvider.upload(newBytes, filename, descriptionText, lati!, longi!);
 
       if (uploadProvider.uploadResponse != null) {
         uploadProvider.setImageFile(null);
@@ -173,8 +254,6 @@ class _PostStoryScreenState extends State<PostStoryScreen> {
     }
   }
 
-  _onCustomCameraView() async {}
-
   Widget _showImage() {
     final imagePath = context.read<UploadProvider>().imagePath;
     return kIsWeb
@@ -186,5 +265,46 @@ class _PostStoryScreenState extends State<PostStoryScreen> {
             File(imagePath.toString()),
             fit: BoxFit.contain,
           );
+  }
+
+  void onMyLocationButtonPress() async {
+    final Location location = Location();
+    late bool serviceEnabled;
+    late PermissionStatus permissionGranted;
+    late LocationData locationData;
+
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        print("Location services is not available");
+        return;
+      }
+    }
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        print("Location permission is denied");
+        return;
+      }
+    }
+    locationData = await location.getLocation();
+    final latlng = LatLng(locationData.latitude!, locationData.longitude!);
+    final info =
+        await geo.placemarkFromCoordinates(latlng.latitude, latlng.longitude);
+
+    final place = info[0];
+    final street = place.street;
+    final address =
+        '${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+    setState(() {
+      placemark = place;
+    });
+    defineMarker(latlng, street!, address);
+
+    mapController.animateCamera(
+      CameraUpdate.newLatLng(latlng),
+    );
   }
 }
