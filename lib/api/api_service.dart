@@ -65,8 +65,8 @@ class ApiService {
     }
   }
 
-  Future<AllStories> getAllStories(String token) async {
-    const String url = "$_baseUrl/stories";
+  Future<AllStories> getAllStories(int page,int size, String? token) async {
+    String url = "$_baseUrl/stories?page=$page&size=$size";
 
     final response = await http.get(
       Uri.parse(url),
@@ -120,6 +120,8 @@ class ApiService {
     String fileName,
     String description,
     String token,
+    double latitude,
+    double longitude
   ) async {
     const String url = "$_baseUrl/stories";
  
@@ -133,6 +135,12 @@ class ApiService {
     );
     final Map<String, String> fields = {
       "description": description,
+      "lat" : latitude.toString(),
+      "lon" : longitude.toString(),
+    };
+    final Map<String, double> fieldloc = {
+      "lat" : latitude,
+      "lon" : longitude,
     };
     final Map<String, String> headers = {
       "Content-type": "multipart/form-data",
