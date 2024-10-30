@@ -55,7 +55,9 @@ class UploadProvider extends ChangeNotifier {
   Future<void> upload(
     List<int> bytes,
     String fileName,
-    String description
+    String description,
+    double latitude,
+    double longitude,
   ) async {
     try {
       message = "";
@@ -68,7 +70,7 @@ class UploadProvider extends ChangeNotifier {
         print("Token kosong");
       }
       uploadResponse =
-          await ApiService().sendPhoto(bytes, fileName, description, token);
+          await ApiService().sendPhoto(bytes, fileName, description, token, latitude, longitude);
       message = uploadResponse?.message ?? "success";
       isUploading = false;
       notifyListeners();
