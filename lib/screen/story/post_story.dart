@@ -25,10 +25,10 @@ class _PostStoryScreenState extends State<PostStoryScreen> {
   late GoogleMapController mapController;
   final Set<Marker> markers = {};
   geo.Placemark? placemark;
-   final Location location = Location();
-    late bool serviceEnabled;
-    late PermissionStatus permissionGranted;
-    late LocationData locationData;
+  final Location location = Location();
+  late bool serviceEnabled;
+  late PermissionStatus permissionGranted;
+  late LocationData locationData;
 
   final _formKey = GlobalKey<FormState>();
   TextEditingController description = TextEditingController();
@@ -136,6 +136,9 @@ class _PostStoryScreenState extends State<PostStoryScreen> {
                             mapController = controller;
                           });
                         },
+                        onLongPress: (LatLng latlng) {
+                          onLongPressGoogleMap(latlng);
+                        },
                       ),
                       Positioned(
                         child: FloatingActionButton(
@@ -144,17 +147,6 @@ class _PostStoryScreenState extends State<PostStoryScreen> {
                               onMyLocationButtonPress();
                             }),
                       ),
-                      // if (placemark == null)
-                      //   const SizedBox()
-                      // else
-                      //   Positioned(
-                      //     bottom: 16,
-                      //     right: 16,
-                      //     left: 16,
-                      //     child: PlacemarkWidget(
-                      //       placemark: placemark!,
-                      //     ),
-                      //   ),
                     ],
                   ),
                 ),
@@ -208,15 +200,16 @@ class _PostStoryScreenState extends State<PostStoryScreen> {
     final filename = imageFile.name;
     final bytes = await imageFile.readAsBytes();
     final newBytes = await uploadProvider.compressImage(bytes);
-    final lati = await locationData.latitude;
-    final longi = await locationData.longitude;
+    final lati = locationData.latitude;
+    final longi = locationData.longitude;
     print("data lati $lati");
     print("data longi $longi");
 
     if (_formKey.currentState!.validate()) {
       var descriptionText = description.text;
 
-      await uploadProvider.upload(newBytes, filename, descriptionText, lati!, longi!);
+      await uploadProvider.upload(
+          newBytes, filename, descriptionText, lati!, longi!);
 
       if (uploadProvider.uploadResponse != null) {
         uploadProvider.setImageFile(null);
@@ -302,6 +295,25 @@ class _PostStoryScreenState extends State<PostStoryScreen> {
       placemark = place;
     });
     defineMarker(latlng, street!, address);
+
+    mapController.animateCamera(
+      CameraUpdate.newLatLng(latlng),
+    );
+  }
+
+  void onLongPressGoogleMap(LatLng latlng) async {
+    final info =
+        await geo.placemarkFromCoordinates(latlng.latitude, latlng.longitude);
+    print(info[0]);
+    final place = info[0];
+    final street = place.street!;
+    final address =
+        '${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+    setState(() {
+      placemark = place;
+    });
+    defineMarker(latlng, street, address);
+    print("object lat $latlng");
 
     mapController.animateCamera(
       CameraUpdate.newLatLng(latlng),
