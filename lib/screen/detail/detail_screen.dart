@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:storyflutter/core.dart';
 import 'package:storyflutter/provider/detail_story_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:geocoding/geocoding.dart' as geo;
 
 class DetailScreen extends StatefulWidget {
   final String userId;
@@ -23,9 +24,9 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  // final myLocation = const LatLng(-6.2417431, 107.0080811);
   late GoogleMapController mapController;
   final Set<Marker> markers = {};
+  geo.Placemark? placemark;
   @override
   void initState() {
     super.initState();
@@ -75,70 +76,77 @@ class _DetailScreenState extends State<DetailScreen> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height,
                   child: GoogleMap(
-                    initialCameraPosition: CameraPosition(
-                      zoom: 18,
-                      target:
-                      myLocation
-                    ),
+                    initialCameraPosition:
+                        CameraPosition(zoom: 18, target: myLocation),
                     markers: markers,
                     zoomControlsEnabled: false,
-                    onMapCreated: (controller) {
+                    onMapCreated: (controller) async {
+                      final info = await geo.placemarkFromCoordinates(
+                          myLocation.latitude, myLocation.longitude);
+                      final place = info[0];
+                      final street = place.street!;
+                      final address =
+                          '${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
+                      setState(() {
+                        placemark = place;
+                      });
+                      defineMarker(myLocation, street, address);
                       setState(() {
                         mapController = controller;
                       });
                     },
                   ),
                 ),
-            Positioned(
-              bottom: 8,
-              right: 8,
-              left: 8,
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                constraints: const BoxConstraints(maxWidth: 500),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: const BorderRadius.all(Radius.circular(24)),
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                      blurRadius: 20,
-                      offset: Offset.zero,
-                      color: Colors.grey.withOpacity(0.5),
-                    )
-                  ],
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(value.detailStories!.story.name),
-                    const SizedBox(height: 5.0),
-                    SizedBox(
-                      height: 200,
-                      child: Image.network(
-                      value.detailStories!.story.photoUrl,
-                      width: double.infinity,
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      fit: BoxFit.fill,
-                      ),
+                Positioned(
+                  bottom: 8,
+                  right: 8,
+                  left: 8,
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    constraints: const BoxConstraints(maxWidth: 500),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.all(Radius.circular(24)),
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                          blurRadius: 20,
+                          offset: Offset.zero,
+                          color: Colors.grey.withOpacity(0.5),
+                        )
+                      ],
                     ),
-                    Text(
-                      value.detailStories!.story.description,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 5.0),
-                    Text(
-                      DateFormat('EEE, M/d/y HH:mm').format(
-                        DateTime.parse(
-                          value.detailStories!.story.createdAt.toString(),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(value.detailStories!.story.name),
+                        const SizedBox(height: 5.0),
+                        SizedBox(
+                          height: 200,
+                          child: Image.network(
+                            value.detailStories!.story.photoUrl,
+                            width: double.infinity,
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            fit: BoxFit.fill,
+                          ),
                         ),
-                      ),
+                        Text(
+                          value.detailStories!.story.description,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 5.0),
+                        Text(
+                          DateFormat('EEE, M/d/y HH:mm').format(
+                            DateTime.parse(
+                              value.detailStories!.story.createdAt.toString(),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
               ],
             );
           } else if (value.resultState == ResultState.noData) {
@@ -153,5 +161,19 @@ class _DetailScreenState extends State<DetailScreen> {
         },
       ),
     );
+  }
+
+  void defineMarker(LatLng latLng, String street, String address) {
+    final marker = Marker(
+        markerId: const MarkerId("source"),
+        position: latLng,
+        infoWindow: InfoWindow(
+          title: street,
+          snippet: address,
+        ));
+    setState(() {
+      markers.clear();
+      markers.add(marker);
+    });
   }
 }
