@@ -15,71 +15,33 @@ class AllStoriesProvider extends ChangeNotifier {
   List<ListStory> data = [];
   ResultState? _state;
   String _message = "";
-  // int? pageItems = 1;
-  // int sizeItems = 15;
-  int _currentPage = 1;
-  int _pageSize = 10;
-  bool _hasMore = true;
+  int? pageItems = 1;
+  int sizeItems = 10;
 
   AllStories? get allStories => _allStories;
   ResultState? get state => _state;
   String get message => _message;
-  int get currentPage => _currentPage;
-  int get pageSize => _pageSize;
-  bool get hasMore => _hasMore;
-
-   //Setter for hasMore
-  void setHasMore(bool isHasMore) {
-    _hasMore = isHasMore;
-    notifyListeners();
-  }
-
-  void setCurrentPage(int page) {
-    _currentPage = page;
-    notifyListeners();
-  }
-
-  // Setter for pageSize
-  void setPageSize(int size) {
-    _pageSize = size;
-    notifyListeners();
-  }
-
-  void nextLoad() {
-    _currentPage = _currentPage + 1;
-    if (data.length == pageSize) {
-      Timer(const Duration(milliseconds: 1000), () {
-        setHasMore(true);
-      });
-    }
-  }
 
   Future<dynamic> fetchallStories() async {
     try {
-      if (_currentPage == 1) {
+      if (pageItems == 1) {
         _state = ResultState.loading;
         notifyListeners();
       }
       final sharedPref = await SharedPreferences.getInstance();
       final token = sharedPref.getString("token") ?? "";
       var response =
-          await ApiService().getAllStories(_currentPage,_pageSize,token);
+          await ApiService().getAllStories(pageItems!,sizeItems,token);
       if (response.error == false) {
         _state = ResultState.hasData;
-        // if (response.listStory.length < sizeItems) {
-        //   pageItems = null;
-        // } else {
-        //   pageItems = pageItems! + 1;
-        //   print("masuk kesini");
-        // }
-        notifyListeners();
+          data.addAll(response.listStory);
 
-        data = data + response.listStory;
-          if (data.length < pageSize || data.length < 6) {
-            setHasMore(false);
-          }
-        // data = data + response.listStory;
-        return _allStories = response;
+        if (response.listStory.length < sizeItems) {
+          pageItems = null;
+        } else {
+          pageItems = pageItems! + 1;
+        }
+        notifyListeners();
       } else {
         _state = ResultState.noData;
         notifyListeners();
