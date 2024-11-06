@@ -138,10 +138,6 @@ class ApiService {
       "lat" : latitude.toString(),
       "lon" : longitude.toString(),
     };
-    final Map<String, double> fieldloc = {
-      "lat" : latitude,
-      "lon" : longitude,
-    };
     final Map<String, String> headers = {
       "Content-type": "multipart/form-data",
       "Authorization": "Bearer $token",
@@ -158,10 +154,11 @@ class ApiService {
     final String responseData = String.fromCharCodes(responseList);
  
     if (statusCode == 201) {
-      final UploadResponse uploadResponse = UploadResponse.fromJson(
-        responseData,
-      );
-      return uploadResponse;
+      return UploadResponse.fromJson(jsonDecode(responseData));
+      // final UploadResponse uploadResponse = UploadResponse.fromJson(
+      //   responseData,
+      // );
+      // return uploadResponse;
     } else {
       throw Exception("Upload file error");
     }
