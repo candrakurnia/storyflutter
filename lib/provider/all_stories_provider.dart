@@ -3,11 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:storyflutter/api/api_service.dart';
 import 'package:storyflutter/constant/result_state.dart';
+import 'package:storyflutter/db/auth_repository.dart';
 import 'package:storyflutter/model/all_stories.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storyflutter/model/session.dart';
 
 class AllStoriesProvider extends ChangeNotifier {
   final ApiService apiService;
+  
 
   AllStoriesProvider({required this.apiService});
 
@@ -21,6 +24,13 @@ class AllStoriesProvider extends ChangeNotifier {
   AllStories? get allStories => _allStories;
   ResultState? get state => _state;
   String get message => _message;
+
+  void resetPage() {
+    pageItems = 1;
+    data.clear();
+    fetchallStories();
+    notifyListeners();
+  }
 
   Future<dynamic> fetchallStories() async {
     try {

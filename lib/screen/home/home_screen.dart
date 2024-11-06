@@ -55,7 +55,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
           height: 50,
         ),
         actions: [
-          LocalizationWidget(context),
+          localizationWidget(context),
           IconButton(
             onPressed: () {
               widget.onPosted();
@@ -83,7 +83,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
       body: RefreshIndicator(
         onRefresh: () async {
           var allStory = context.read<AllStoriesProvider>();
-          allStory.fetchallStories();
+          allStory.resetPage();
         },
         child: SafeArea(
           child: Container(
@@ -100,7 +100,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
                         child: CircularProgressIndicator(),
                       );
                     } else if (value.state == ResultState.hasData) {
-                      return ListStory(value);
+                      return listStory(value);
                     } else if (value.state == ResultState.noData) {
                       return Center(
                         child: Material(
@@ -123,7 +123,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
     );
   }
 
-  Widget ListStory(AllStoriesProvider value) {
+  Widget listStory(AllStoriesProvider value) {
     return ListView.builder(
       controller: scrollController,
       itemCount: value.data.length + (value.pageItems != null ? 1 : 0),
@@ -246,7 +246,7 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
     );
   }
 
-  Widget LocalizationWidget(BuildContext context) {
+  Widget localizationWidget(BuildContext context) {
     return DropdownButtonHideUnderline(
       child: DropdownButton(
         icon: const Icon(Icons.flag),
