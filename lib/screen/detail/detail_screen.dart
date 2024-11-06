@@ -71,10 +71,11 @@ class _DetailScreenState extends State<DetailScreen> {
             final myLocation = LatLng(
                 value.detailStories?.story.lat ?? -6.2417431,
                 value.detailStories?.story.lon ?? 107.0080811);
-            return Stack(
+            return Column(
               children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height,
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 250,
                   child: GoogleMap(
                     initialCameraPosition:
                         CameraPosition(zoom: 18, target: myLocation),
@@ -97,56 +98,49 @@ class _DetailScreenState extends State<DetailScreen> {
                     },
                   ),
                 ),
-                Positioned(
-                  bottom: 8,
-                  right: 8,
-                  left: 8,
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    constraints: const BoxConstraints(maxWidth: 500),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: const BorderRadius.all(Radius.circular(24)),
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                          blurRadius: 20,
-                          offset: Offset.zero,
-                          color: Colors.grey.withOpacity(0.5),
-                        )
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(value.detailStories!.story.name),
-                        const SizedBox(height: 5.0),
-                        SizedBox(
-                          height: 200,
-                          child: Image.network(
-                            value.detailStories!.story.photoUrl,
-                            width: double.infinity,
-                            height: MediaQuery.of(context).size.height * 0.3,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        Text(
-                          value.detailStories!.story.description,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 5.0),
-                        Text(
-                          DateFormat('EEE, M/d/y HH:mm').format(
-                            DateTime.parse(
-                              value.detailStories!.story.createdAt.toString(),
+                Expanded(
+                  child: SingleChildScrollView(
+                    controller: ScrollController(),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(value.detailStories!.story.name, style:const TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold
+                            ),),
+                            const SizedBox(height: 5.0),
+                            SizedBox(
+                              height: 250,
+                              child: Image.network(
+                                value.detailStories!.story.photoUrl,
+                                width: double.infinity,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.3,
+                                fit: BoxFit.fill,
+                              ),
                             ),
-                          ),
+                            Text(
+                              value.detailStories!.story.description, style: TextStyle(fontSize: 16),
+                            ),
+                            const SizedBox(height: 5.0),
+                            Text(
+                              DateFormat('EEE, M/d/y HH:mm').format(
+                                DateTime.parse(
+                                  value.detailStories!.story.createdAt
+                                      .toString(),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                )
               ],
             );
           } else if (value.resultState == ResultState.noData) {
