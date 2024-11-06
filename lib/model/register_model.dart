@@ -21,14 +21,8 @@ class RegisterModel {
     });
 
     factory RegisterModel.fromJson(Map<String, dynamic> json) => _$RegisterModelFromJson(json);
-    // RegisterModel(
-    //     error: json["error"],
-    //     message: json["message"],
-    // );
+   
 
     Map<String, dynamic> toJson() => _$RegisterModelToJson(this);
-    // {
-    //     "error": error,
-    //     "message": message,
-    // };
+   
 }

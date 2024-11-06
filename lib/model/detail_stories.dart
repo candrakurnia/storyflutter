@@ -24,18 +24,9 @@ class DetailStories {
     });
 
     factory DetailStories.fromJson(Map<String, dynamic> json) => _$DetailStoriesFromJson(json);
-    // DetailStories(
-    //     error: json["error"],
-    //     message: json["message"],
-    //     story: Story.fromJson(json["story"]),
-    // );
-
+ 
     Map<String, dynamic> toJson() => _$DetailStoriesToJson(this);
-    // {
-    //     "error": error,
-    //     "message": message,
-    //     "story": story.toJson(),
-    // };
+    
 }
 @JsonSerializable()
 class Story {
@@ -58,24 +49,8 @@ class Story {
     });
 
     factory Story.fromJson(Map<String, dynamic> json) => _$StoryFromJson(json);
-    // Story(
-    //     id: json["id"],
-    //     name: json["name"],
-    //     description: json["description"],
-    //     photoUrl: json["photoUrl"],
-    //     createdAt: DateTime.parse(json["createdAt"]),
-    //     lat: json["lat"],
-    //     lon: json["lon"],
-    // );
+    
 
     Map<String, dynamic> toJson() => _$StoryToJson(this);
-    // {
-    //     "id": id,
-    //     "name": name,
-    //     "description": description,
-    //     "photoUrl": photoUrl,
-    //     "createdAt": createdAt.toIso8601String(),
-    //     "lat": lat,
-    //     "lon": lon,
-    // };
+    
 }

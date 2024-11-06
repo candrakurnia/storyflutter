@@ -27,18 +27,8 @@ class LoginModel {
 
   factory LoginModel.fromJson(Map<String, dynamic> json) =>
       _$LoginModelFromJson(json);
-  // LoginModel(
-  //     error: json["error"],
-  //     message: json["message"],
-  //     loginResult: LoginResult.fromJson(json["loginResult"]),
-  // );
-
+  
   Map<String, dynamic> toJson() => _$LoginModelToJson(this);
-  // {
-  //     "error": error,
-  //     "message": message,
-  //     "loginResult": loginResult.toJson(),
-  // };
 }
 
 @JsonSerializable()
@@ -55,16 +45,6 @@ class LoginResult {
 
   factory LoginResult.fromJson(Map<String, dynamic> json) =>
       _$LoginResultFromJson(json);
-  // LoginResult(
-  //     userId: json["userId"],
-  //     name: json["name"],
-  //     token: json["token"],
-  // );
 
   Map<String, dynamic> toJson() => _$LoginResultToJson(this);
-  // {
-  //     "userId": userId,
-  //     "name": name,
-  //     "token": token,
-  // };
 }

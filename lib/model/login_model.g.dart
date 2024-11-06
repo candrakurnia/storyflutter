@@ -9,8 +9,9 @@ part of 'login_model.dart';
 LoginModel _$LoginModelFromJson(Map<String, dynamic> json) => LoginModel(
       error: json['error'] as bool,
       message: json['message'] as String,
-      loginResult:
-          LoginResult.fromJson(json['loginResult'] as Map<String, dynamic>),
+      loginResult: json['loginResult'] == null
+          ? null
+          : LoginResult.fromJson(json['loginResult'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$LoginModelToJson(LoginModel instance) =>

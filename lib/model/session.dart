@@ -1,5 +1,10 @@
 import 'dart:convert';
 
+import 'package:json_annotation/json_annotation.dart';
+
+part 'session.g.dart';
+
+@JsonSerializable()
 class Session {
   String? session;
   String? token;
@@ -8,34 +13,21 @@ class Session {
     this.session,
     this.token,
   });
- 
+
   @override
   String toString() => 'User(session: $session, token: $token)';
 
-   Map<String, dynamic> toMap() {
-    return {
-      'session': session,
-      'token': token,
-    };
-  }
-  factory Session.fromMap(Map<String, dynamic> map) {
-    return Session(
-      session: map['session'],
-      token: map['token'],
-    );
-  }
-  String toJson() => json.encode(toMap());
-  factory Session.fromJson(String source) => Session.fromMap(json.decode(source));
+  factory Session.fromJson(Map<String, dynamic> json) =>
+      _$SessionFromJson(json);
+  Map<String, dynamic> toJson() => _$SessionToJson(this);
 
-   @override
+  @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
-    return other is Session &&
-      other.session == session &&
-      other.token == token;
-  }
-  @override
-  int get hashCode => Object.hash(session, token); 
 
+    return other is Session && other.session == session && other.token == token;
+  }
+
+  @override
+  int get hashCode => Object.hash(session, token);
 }
