@@ -4,7 +4,6 @@ import 'package:storyflutter/screen/detail/detail_screen.dart';
 import 'package:storyflutter/screen/home/home_screen.dart';
 import 'package:storyflutter/screen/login/login_screen.dart';
 import 'package:storyflutter/model/page_configuration.dart';
-import 'package:storyflutter/screen/maps/maps_screen.dart';
 import 'package:storyflutter/screen/register/register_screen.dart';
 import 'package:storyflutter/screen/splash/splashscreen.dart';
 import 'package:storyflutter/screen/story/post_story.dart';
@@ -69,38 +68,20 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
           ),
         ),
       ];
-  List<Page> get _locStack => [
-        MaterialPage(
-          child: MapsScreen(
-            onMaps : () {
-              isLocation = true;
-              notifyListeners();
-            }
-          ),
-        ),
-      ];
   List<Page> get _loggedInStack => [
         MaterialPage(
           key: const ValueKey("HomeStory"),
-          child: HomeScreenPage(
-            onLogout: () {
-              isLoggedIn = false;
-              notifyListeners();
-            },
-            onTapped: (String id) {
-              selectedUser = id;
-              notifyListeners();
-            },
-            onPosted: () {
-              isLoggedIn = true;
-              isPosted = true;
-              notifyListeners();
-            },
-            onMaps : () {
-              isLoggedIn = true;
-              isLocation = true;
-              notifyListeners();
-            }
+          child: HomeScreenPage(onLogout: () {
+            isLoggedIn = false;
+            notifyListeners();
+          }, onTapped: (String id) {
+            selectedUser = id;
+            notifyListeners();
+          }, onPosted: () {
+            isLoggedIn = true;
+            isPosted = true;
+            notifyListeners();
+          }, 
           ),
         ),
         if (selectedUser != null)
@@ -108,6 +89,10 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
             key: ValueKey(selectedUser),
             child: DetailScreen(
               userId: selectedUser!,
+              onMaps: (double lat, double lon) {
+                isLocation = true;
+                notifyListeners();
+              },
             ),
           ),
       ];
@@ -130,8 +115,6 @@ class MyRouterDelegate extends RouterDelegate<PageConfiguration>
       historyStack = _splashStack;
     } else if (isLoggedIn == true && isPosted == true) {
       historyStack = _loggedInStack + _postStack;
-    } else if (isLoggedIn == true && isLocation == true) {
-      historyStack = _loggedInStack + _locStack;
     } else if (isLoggedIn == true && isPosted == false) {
       historyStack = _loggedInStack;
     } else {
