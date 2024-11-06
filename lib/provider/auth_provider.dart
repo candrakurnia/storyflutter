@@ -35,33 +35,20 @@ class AuthProvider extends ChangeNotifier {
 
   Future<bool> sessionLogin(Session session) async {
     isLoadingLogin = true;
-    await authRepository.saveUser2(session);
-    // authRepository.setToken(session.token!);
+    await authRepository.saveSession(session);
+    authRepository.setToken(session.token!);
     notifyListeners();
     final sessionUser = await authRepository.getUser();
+    print("object session ${session.token}");
+    print("object sessionUser $sessionUser");
     if (session == sessionUser) {
       authRepository.login();
     }
     isLoggedIn = await authRepository.isLoggedIn();
     isLoadingLogin = false;
-    authRepository.setToken(session.token!);
     notifyListeners();
     return isLoggedIn;
   }
-
-  // void getAllStories(AllStoriesProvider allStoriesProvider) async {
-  //   final token = await authRepository.getToken();
-
-  //   if (token.isEmpty) {
-  //     debugPrint("token ternyata kosong");
-  //     return;
-  //   } else {
-  //     allStoriesProvider.pageItems = 1;
-  //     await allStoriesProvider.fetchallStories(token);
-  //     debugPrint("token ternyata ada isinya");
-  //     notifyListeners();
-  //   }
-  // }
 
   void gettingToken() async {
     _token = await authRepository.getToken();
@@ -82,12 +69,12 @@ class AuthProvider extends ChangeNotifier {
     return !isLoggedIn;
   }
 
-  Future<bool> saveUser(Session user) async {
-    isLoadingRegister = true;
-    notifyListeners();
-    final userState = await authRepository.saveUser2(user);
-    isLoadingRegister = false;
-    notifyListeners();
-    return userState;
-  }
+  // Future<bool> saveUser(Session user) async {
+  //   isLoadingRegister = true;
+  //   notifyListeners();
+  //   final userState = await authRepository.saveUser2(user);
+  //   isLoadingRegister = false;
+  //   notifyListeners();
+  //   return userState;
+  // }
 }
